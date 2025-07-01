@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import type { User } from "@/types/database"
-import { redirect } from "next/navigation"
 
-export async function getUser(): Promise<User | null> {
+export async function ensureUserProfile(): Promise<User | null> {
   const supabase = await createClient()
 
   const {
@@ -13,28 +12,28 @@ export async function getUser(): Promise<User | null> {
     return null
   }
 
-  // Tentar obter o perfil existente
-  const { data: user } = await supabase
+  // Verificar se o perfil já existe
+  const { data: existingProfile } = await supabase
     .from("users")
     .select("*")
     .eq("id", authUser.id)
     .single()
 
-  if (user) {
-    return user
+  if (existingProfile) {
+    return existingProfile
   }
 
-  // Se não existe, criar automaticamente
+  // Se não existe, criar o perfil
   const nome = authUser.user_metadata?.nome || authUser.email?.split('@')[0] || ''
   const role = authUser.user_metadata?.role || 'empregado'
 
-  const { data: newUser, error } = await supabase
+  const { data: newProfile, error } = await supabase
     .from("users")
     .insert({
       id: authUser.id,
       email: authUser.email!,
       nome,
-      role: role as 'chefe' | 'empregado',
+      role,
     })
     .select()
     .single()
@@ -44,25 +43,5 @@ export async function getUser(): Promise<User | null> {
     return null
   }
 
-  return newUser
-}
-
-export async function requireAuth() {
-  const user = await getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
-
-  return user
-}
-
-export async function requireChefe() {
-  const user = await requireAuth()
-
-  if (user.role !== "chefe") {
-    redirect("/dashboard")
-  }
-
-  return user
+  return newProfile
 }

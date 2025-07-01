@@ -28,21 +28,33 @@ export function RegisterForm() {
 
     const supabase = createClient()
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          nome,
-          role,
+    try {
+      // Registar utilizador no Supabase Auth
+      const { data, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            nome,
+            role,
+          },
         },
-      },
-    })
+      })
 
-    if (error) {
-      setError(error.message)
-    } else {
-      router.push("/auth/verify-email")
+      if (authError) {
+        console.error("Supabase auth error:", authError)
+        setError(`Erro ao registar: ${authError.message}`)
+        return
+      }
+
+      // Sucesso - redirecionar
+      if (data.user) {
+        router.push("/auth/verify-email")
+      }
+
+    } catch (err) {
+      console.error("Unexpected error:", err)
+      setError("Erro inesperado. Tente novamente.")
     }
 
     setLoading(false)
