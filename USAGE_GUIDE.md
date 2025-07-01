@@ -1,108 +1,180 @@
-# 🚀 Aplicação AssistAI - Guia de Uso
+# 🚀 AssistAI - Roadmap & Feature TODO List
 
-## ✅ Estado Atual
-A aplicação está **funcionando** e pode ser testada em: `http://localhost:3000`
+## 📋 **FASE 1: CORE FEATURES (Manual)**
+*Funcionalidades básicas funcionando manualmente primeiro*
 
-## 🎯 Funcionalidades Implementadas
+### ✅ **Autenticação & Base** - COMPLETO
+- [x] Registo de utilizadores com email/password
+- [x] Login com redirecionamento automático
+- [x] Roles: Chefe ou Empregado
+- [x] Middleware de protecção de rotas
+- [x] Logout funcional
+- [x] Dashboard diferenciado por role
+- [x] Layout responsivo com sidebar e header
 
-### ✅ Autenticação
-- **Registo de utilizadores** com email/password
-- **Login** com redirecionamento automático
-- **Roles**: Chefe ou Empregado
-- **Middleware** de protecção de rotas
-- **Logout** funcional
+### 🔄 **Gestão de Equipas** - EM DESENVOLVIMENTO
+- [x] Onboarding: Criar equipa (chefes)
+- [x] Onboarding: Juntar-se a equipa (empregados)
+- [ ] **Visualizar membros da equipa**
+- [ ] **Editar informações da equipa**
+- [ ] **Remover membros da equipa**
+- [ ] **Definir roles específicos** (ex: supervisor, rececionista)
 
-### ✅ Onboarding
-- **Criar equipa** (para chefes)
-- **Juntar-se a equipa** (para empregados)
-- **Fluxo automático** após primeiro login
+### 📅 **Gestão de Reservas** - TODO
+- [ ] **CRUD Reservas**: Criar, visualizar, editar, eliminar
+- [ ] **Campos**: Data, hora, nome cliente, contacto, notas, mesa/sala
+- [ ] **Validação de conflitos** de horários
+- [ ] **Filtros**: Por data, cliente, status
+- [ ] **Calendário visual** para reservas
+- [ ] **Status de reservas**: Confirmada, Pendente, Cancelada
+- [ ] **Histórico de reservas**
 
-### ✅ Dashboard
-- **Dashboard diferenciado** por role (Chefe vs Empregado)
-- **Layout responsivo** com sidebar e header
-- **Navegação** entre secções
+### ✅ **Gestão de Tarefas** - TODO
+- [ ] **CRUD Tarefas de Equipa**: Criar, atribuir, editar, eliminar
+- [ ] **Campos**: Título, descrição, data, prioridade, responsável
+- [ ] **Status**: Por fazer, Em progresso, Concluída
+- [ ] **Tarefas recorrentes**: Diária, semanal, mensal
+- [ ] **Tarefas pessoais** para cada empregado
+- [ ] **Dashboard de tarefas** com filtros
+- [ ] **Notificações de prazo** próximo
 
-### ✅ Base de Dados
-- **Tabelas criadas** no Supabase
-- **Políticas RLS** configuradas
-- **Triggers** para criação automática de perfis
-- **Funções** para tarefas recorrentes
+### 🕐 **Gestão de Horários** - TODO
+- [ ] **Criar horários semanais** por colaborador
+- [ ] **Visualização semanal/mensal**
+- [ ] **Turnos personalizáveis** (manhã, tarde, noite)
+- [ ] **Gestão de folgas** e feriados
+- [ ] **Troca de turnos** entre colaboradores
+- [ ] **Relatório de horas trabalhadas**
+- [ ] **Export de horários** para PDF/Excel
 
-## 🔧 Como Testar
+### 📊 **Relatórios & Analytics** - TODO
+- [ ] **Dashboard com métricas** básicas
+- [ ] **Relatório de reservas** por período
+- [ ] **Produtividade da equipa**
+- [ ] **Tarefas completadas vs pendentes**
+- [ ] **Ocupação por dia/semana**
+- [ ] **Export de relatórios**
 
-### 1. Registar um Chefe
-1. Ir para `/auth/register`
-2. Preencher dados e selecionar role "Chefe"
-3. Completar o registo
-4. Criar uma equipa no onboarding
+## 🤖 **FASE 2: INTELIGÊNCIA ARTIFICIAL**
+*Adicionar IA a todas as funcionalidades depois do manual funcionar*
 
-### 2. Registar um Empregado
-1. Registar outro utilizador com role "Empregado"
-2. Juntar-se à equipa criada pelo chefe
+### 🧠 **AI para Reservas**
+- [ ] **Sugestão inteligente** de horários disponíveis
+- [ ] **Previsão de no-shows** baseada em histórico
+- [ ] **Otimização automática** de mesa/sala
+- [ ] **Chatbot** para clientes fazerem reservas
+- [ ] **Análise de padrões** de reservas
+- [ ] **Recomendações** de melhores horários
 
-### 3. Testar Dashboards
-- **Chefe**: Acesso a todas as funcionalidades de gestão
-- **Empregado**: Acesso apenas às suas tarefas e visualizações
+### 🤖 **AI para Tarefas**
+- [ ] **Geração automática** de tarefas baseada em padrões
+- [ ] **Priorização inteligente** de tarefas
+- [ ] **Sugestão de responsáveis** baseada em carga de trabalho
+- [ ] **Previsão de tempo** necessário para completar
+- [ ] **AI Assistant** para criar tarefas por voz/texto
+- [ ] **Análise de produtividade** da equipa
 
-## 📊 Próximas Funcionalidades a Implementar
+### 📈 **AI para Horários**
+- [ ] **Otimização automática** de horários
+- [ ] **Previsão de necessidades** de pessoal
+- [ ] **Sugestão de substituições** automáticas
+- [ ] **Análise de padrões** de trabalho
+- [ ] **Balanceamento inteligente** de carga de trabalho
+- [ ] **Previsão de burnout** e sugestões
 
-### 🎯 Priority 1 - Funcionalidades Core
-- [ ] **Gestão de Reservas** (CRUD completo)
-- [ ] **Gestão de Tarefas** (criar, atribuir, marcar como concluída)
-- [ ] **Gestão de Horários** (definir horários semanais)
-- [ ] **Tarefas Pessoais** (para cada empregado)
+### 🔮 **AI Analytics Avançado**
+- [ ] **Previsão de demanda** futura
+- [ ] **Insights automáticos** sobre negócio
+- [ ] **Detecção de anomalias** em padrões
+- [ ] **Recomendações estratégicas**
+- [ ] **Análise de sentimento** da equipa
+- [ ] **Dashboard inteligente** com insights personalizados
 
-### 🎯 Priority 2 - Melhorias
-- [ ] **Notificações** (email automático)
-- [ ] **Relatórios** e estatísticas
-- [ ] **Calendário** visual
-- [ ] **Filtros** e pesquisa
+## 🚀 **FASE 3: FEATURES AVANÇADAS**
 
-### 🎯 Priority 3 - Avançado
-- [ ] **API REST** completa
-- [ ] **Integração WhatsApp/SMS**
-- [ ] **PWA** (Progressive Web App)
-- [ ] **Múltiplas equipas** por utilizador
+### 📱 **Mobile & PWA**
+- [ ] **Progressive Web App** (PWA)
+- [ ] **Notificações push** mobile
+- [ ] **App móvel** nativa (React Native)
+- [ ] **Modo offline** básico
+- [ ] **Sincronização** quando volta online
 
-## 🛠️ Comandos Úteis
+### 🔗 **Integrações**
+- [ ] **WhatsApp Business API** para notificações
+- [ ] **SMS** para lembretes
+- [ ] **Email marketing** automático
+- [ ] **Google Calendar** sync
+- [ ] **POS Integration** (sistemas de venda)
+- [ ] **API REST** completa para terceiros
 
-```bash
-# Iniciar desenvolvimento
-npm run dev
+### �️ **Admin Avançado**
+- [ ] **Multi-tenant**: Múltiplas empresas
+- [ ] **White-label**: Personalização por cliente
+- [ ] **Backup automático** de dados
+- [ ] **Auditoria** de ações
+- [ ] **Permissões granulares**
+- [ ] **Dashboard de admin global**
 
-# Build para produção
-npm run build
+### 🔒 **Segurança & Compliance**
+- [ ] **2FA** (Two-Factor Authentication)
+- [ ] **GDPR** compliance
+- [ ] **Logs de auditoria** completos
+- [ ] **Encriptação** de dados sensíveis
+- [ ] **Políticas de retenção** de dados
 
-# Executar linter
-npm run lint
+## 🎯 **PRÓXIMOS PASSOS IMEDIATOS**
 
-# Deploy na Vercel (conectar repository)
-vercel --prod
-```
+### Esta Semana:
+1. ✅ Resolver problemas de registo/login
+2. 🔄 Implementar CRUD de Reservas
+3. 🔄 Criar formulários de criação de reservas
 
-## 🐛 Resolução de Problemas
+### Próxima Semana:
+1. 📋 Implementar gestão de tarefas básica
+2. 🕐 Começar sistema de horários
+3. 📊 Dashboard com estatísticas básicas
 
-### Erro de Autenticação
-- Verificar se as variáveis de ambiente estão corretas
-- Confirmar se as tabelas foram criadas no Supabase
-- Verificar se as políticas RLS estão ativas
-
-### Erro de Compilação
-- Executar `npm install` para atualizar dependências
-- Verificar versões de React/Next.js
-- Limpar cache: `npm run build`
-
-### Problemas de Base de Dados
-- Executar os scripts SQL na ordem correta
-- Verificar se o RLS está ativado em todas as tabelas
-- Testar queries diretamente no editor SQL do Supabase
-
-## 📞 Suporte
-Se encontrar problemas, verificar:
-1. Console do browser (F12)
-2. Terminal onde está a executar `npm run dev`
-3. Logs do Supabase no painel de administração
+### Este Mês:
+1. 🎨 Melhorar UI/UX
+2. 📱 Tornar responsive para mobile
+3. 🔧 Preparar para deploy em produção
 
 ---
 
-**🎉 A aplicação está pronta para ser testada e desenvolvida!**
+## 💡 **Filosofia do Projeto**
+1. **Manual First**: Tudo funciona manualmente antes de adicionar IA
+2. **AI Enhancement**: IA melhora funcionalidades existentes, não as substitui
+3. **User-Centric**: Cada feature resolve um problema real dos utilizadores
+4. **Iterative**: Desenvolvimento incremental com feedback constante
+
+**🎉 Objetivo: Criar a plataforma de gestão mais inteligente para PMEs!**
+
+## 🛠️ **Comandos de Desenvolvimento**
+
+```bash
+# Desenvolvimento
+npm run dev          # Iniciar servidor local
+npm run build        # Build para produção  
+npm run lint         # Verificar código
+npm run type-check   # Verificar TypeScript
+
+# Base de Dados
+# 1. Executar scripts/ultra-simple.sql primeiro
+# 2. Depois scripts/final-complete-setup.sql para features completas
+
+# Deploy
+vercel --prod        # Deploy na Vercel
+```
+
+## 🐛 **Troubleshooting**
+
+### Problemas Comuns:
+1. **Erro de registo**: Executar `scripts/ultra-simple.sql` no Supabase
+2. **RLS errors**: Desativar RLS temporariamente nas tabelas
+3. **Build errors**: Verificar versões de dependências
+4. **Auth issues**: Confirmar variáveis de ambiente `.env.local`
+
+### Debug:
+- **Browser**: F12 → Console para erros frontend
+- **Server**: Terminal com `npm run dev` para erros backend  
+- **Database**: Supabase → Logs para erros de base de dados
