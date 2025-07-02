@@ -17,7 +17,7 @@
 - [x] Onboarding: Juntar-se a equipa (empregados)
 - [x] Visualizar membros da equipa
 - [x] **Editar informações da equipa**
-- [ ] **Remover membros da equipa**
+- [x] **Remover membros da equipa**
 - [ ] **Definir roles específicos** (ex: supervisor, rececionista)
 - [ ] **Convidar membros para equipa**
 

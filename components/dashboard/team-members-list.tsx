@@ -33,6 +33,19 @@ export function TeamMembersList({ members, currentUser, team }: TeamMembersListP
       return
     }
 
+    // Verificar se é o último chefe da equipa
+    const memberToRemove = members.find(m => m.id === memberId)
+    const chefes = members.filter(m => m.role === "chefe")
+    
+    if (memberToRemove?.role === "chefe" && chefes.length === 1) {
+      toast({
+        title: "Erro",
+        description: "Não pode remover o último chefe da equipa. Promova outro membro primeiro.",
+        variant: "destructive",
+      })
+      return
+    }
+
     setLoading(memberId)
     const supabase = createClient()
 
@@ -103,7 +116,12 @@ export function TeamMembersList({ members, currentUser, team }: TeamMembersListP
   return (
     <div className="space-y-4">
       {members.map((member) => (
-        <Card key={member.id} className="hover:shadow-md transition-shadow">
+        <Card 
+          key={member.id} 
+          className={`hover:shadow-md transition-all duration-200 ${
+            loading === member.id ? 'opacity-50 pointer-events-none' : ''
+          }`}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
@@ -120,6 +138,9 @@ export function TeamMembersList({ members, currentUser, team }: TeamMembersListP
                     </h3>
                     {member.id === currentUser.id && (
                       <Badge variant="outline" className="text-xs">Você</Badge>
+                    )}
+                    {loading === member.id && (
+                      <Badge variant="destructive" className="text-xs">Removendo...</Badge>
                     )}
                   </div>
                   
@@ -168,9 +189,23 @@ export function TeamMembersList({ members, currentUser, team }: TeamMembersListP
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>Remover membro da equipa?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Tem a certeza que quer remover <strong>{member.nome || member.email}</strong> da equipa? 
-                              Esta ação não pode ser desfeita.
+                            <AlertDialogDescription className="space-y-2">
+                              <p>
+                                Tem a certeza que quer remover <strong>{member.nome || member.email}</strong> da equipa?
+                              </p>
+                              <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 mt-3">
+                                <p className="text-sm text-yellow-800">
+                                  <strong>O que acontece:</strong>
+                                </p>
+                                <ul className="text-sm text-yellow-700 mt-1 space-y-1">
+                                  <li>• O membro perderá acesso a esta equipa</li>
+                                  <li>• Poderá criar nova equipa ou juntar-se a outra</li>
+                                  <li>• Histórico de atividades será mantido</li>
+                                </ul>
+                              </div>
+                              <p className="text-sm text-gray-600 mt-3">
+                                Esta ação não pode ser desfeita.
+                              </p>
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
