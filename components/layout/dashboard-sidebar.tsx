@@ -18,7 +18,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
     { href: "/dashboard/reservas", label: "Reservas", icon: Calendar },
     { href: "/dashboard/tarefas", label: "Tarefas", icon: ClipboardList },
     { href: "/dashboard/horarios", label: "Horários", icon: Clock },
-    { href: "/dashboard/equipa", label: "Equipa", icon: Users },
+    { href: "/dashboard/team", label: "Equipa", icon: Users },
     { href: "/dashboard/settings", label: "Definições", icon: Settings },
   ]
 
@@ -27,6 +27,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
     { href: "/dashboard/minhas-tarefas", label: "Minhas Tarefas", icon: ClipboardList },
     { href: "/dashboard/meu-horario", label: "Meu Horário", icon: Clock },
     { href: "/dashboard/reservas", label: "Reservas", icon: Calendar },
+    { href: "/dashboard/team", label: "Equipa", icon: Users },
     { href: "/dashboard/settings", label: "Definições", icon: Settings },
   ]
 
