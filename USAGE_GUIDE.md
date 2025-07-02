@@ -16,7 +16,7 @@
 - [x] Onboarding: Criar equipa (chefes)
 - [x] Onboarding: Juntar-se a equipa (empregados)
 - [x] Visualizar membros da equipa
-- [ ] **Editar informações da equipa**
+- [x] **Editar informações da equipa**
 - [ ] **Remover membros da equipa**
 - [ ] **Definir roles específicos** (ex: supervisor, rececionista)
 - [ ] **Convidar membros para equipa**

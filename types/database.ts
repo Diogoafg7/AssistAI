@@ -15,6 +15,12 @@ export interface Team {
   id: string
   nome: string
   chefe_user_id: string
+  descricao?: string
+  tipo_negocio?: string
+  telefone?: string
+  email?: string
+  endereco?: string
+  website?: string
   created_at: string
   updated_at: string
 }

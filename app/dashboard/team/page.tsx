@@ -4,7 +4,7 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { TeamMembersList } from "@/components/dashboard/team-members-list"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Plus } from "lucide-react"
+import { Users, Plus, Settings } from "lucide-react"
 import Link from "next/link"
 
 export default async function TeamMembersPage() {
@@ -63,12 +63,20 @@ export default async function TeamMembersPage() {
           </div>
           
           {user.role === "chefe" && (
-            <Button asChild>
-              <Link href="/dashboard/team/invite">
-                <Plus className="h-4 w-4 mr-2" />
-                Convidar Membro
-              </Link>
-            </Button>
+            <div className="flex items-center space-x-3">
+              <Button asChild variant="outline">
+                <Link href="/dashboard/team/edit">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Editar Equipa
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link href="/dashboard/team/invite">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Convidar Membro
+                </Link>
+              </Button>
+            </div>
           )}
         </div>
 
