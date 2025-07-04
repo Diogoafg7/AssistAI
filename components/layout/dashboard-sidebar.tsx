@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import type { User } from "@/types/database"
-import { Home, Calendar, ClipboardList, Clock, Users, Settings } from "lucide-react"
+import { Home, Calendar, ClipboardList, Clock, Users, Settings, UserPlus } from "lucide-react"
 
 interface DashboardSidebarProps {
   user: User
@@ -19,6 +19,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
     { href: "/dashboard/tarefas", label: "Tarefas", icon: ClipboardList },
     { href: "/dashboard/horarios", label: "Horários", icon: Clock },
     { href: "/dashboard/team", label: "Equipa", icon: Users },
+    { href: "/dashboard/team/requests", label: "Pedidos", icon: UserPlus },
     { href: "/dashboard/settings", label: "Definições", icon: Settings },
   ]
 

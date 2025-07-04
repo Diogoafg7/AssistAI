@@ -1,9 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Calendar, Users, ClipboardList, Clock } from "lucide-react"
+import { Calendar, Users, ClipboardList, Clock, UserPlus } from "lucide-react"
 import type { User } from "@/types/database"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import Link from "next/link"
+import { PendingRequestsAlert } from "@/components/dashboard/pending-requests-alert"
 
 interface ChefeDashboardProps {
   user: User
@@ -17,6 +18,9 @@ export function ChefeDashboard({ user }: ChefeDashboardProps) {
           <h1 className="text-3xl font-bold">Dashboard do Chefe</h1>
           <p className="text-gray-600">Gerir a sua equipa e operações</p>
         </div>
+
+        {/* Alerta de pedidos pendentes */}
+        <PendingRequestsAlert user={user} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>

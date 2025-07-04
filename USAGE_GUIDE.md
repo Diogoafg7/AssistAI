@@ -18,8 +18,9 @@
 - [x] Visualizar membros da equipa
 - [x] **Editar informações da equipa**
 - [x] **Remover membros da equipa**
-- [ ] **Definir roles específicos** (ex: supervisor, rececionista)
+- [x] **Sistema de pedidos para entrar na equipa e sistema de aceitar pedidos pelo chefe**
 - [ ] **Convidar membros para equipa**
+- [ ] **Definir roles específicos** (ex: supervisor, rececionista)
 
 ### 📅 **Gestão de Reservas** - TODO
 - [ ] **CRUD Reservas**: Criar, visualizar, editar, eliminar

@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Calendar, ClipboardList, Clock, CheckCircle } from "lucide-react"
 import type { User } from "@/types/database"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
+import { MyTeamRequests } from "@/components/dashboard/my-team-requests"
 
 interface EmpregadoDashboardProps {
   user: User
@@ -61,6 +62,9 @@ export function EmpregadoDashboard({ user }: EmpregadoDashboardProps) {
             </CardContent>
           </Card>
         </div>
+
+        {/* Mostrar pedidos de equipa se existirem */}
+        <MyTeamRequests user={user} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>

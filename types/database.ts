@@ -1,5 +1,6 @@
 export type UserRole = "chefe" | "empregado"
 export type TaskRecurrence = "unica" | "diaria" | "semanal" | "mensal"
+export type TeamRequestStatus = "pendente" | "aceite" | "rejeitado"
 
 export interface User {
   id: string
@@ -72,4 +73,20 @@ export interface Horario {
   semana_inicio: string
   created_at: string
   updated_at: string
+}
+
+export interface TeamRequest {
+  id: string
+  team_id: string
+  user_id: string
+  status: TeamRequestStatus
+  mensagem?: string
+  created_at: string
+  updated_at: string
+  reviewed_at?: string
+  reviewed_by?: string
+  // Dados relacionados (joins)
+  user?: User
+  team?: Team
+  reviewed_by_user?: User
 }

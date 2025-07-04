@@ -288,20 +288,195 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- ========================================
--- SCRIPT COMPLETO EXECUTADO COM SUCESSO!
--- ========================================
+ALTER TABLE teams ADD COLUMN IF NOT EXISTS descricao TEXT;
+ALTER TABLE teams ADD COLUMN IF NOT EXISTS tipo_negocio VARCHAR(100);
+ALTER TABLE teams ADD COLUMN IF NOT EXISTS telefone VARCHAR(20);
+ALTER TABLE teams ADD COLUMN IF NOT EXISTS email VARCHAR(255);
+ALTER TABLE teams ADD COLUMN IF NOT EXISTS endereco TEXT;
+ALTER TABLE teams ADD COLUMN IF NOT EXISTS website VARCHAR(255);
 
--- Verificar se tudo foi criado corretamente
-SELECT 'Tabelas criadas:' as status;
-SELECT table_name FROM information_schema.tables 
-WHERE table_schema = 'public' 
-AND table_name IN ('users', 'teams', 'reservas', 'tarefas', 'personal_tasks', 'horarios');
+-- Script para criar tabela de auditoria de ações da equipa (OPCIONAL)
+-- Execute no SQL Editor do Supabase se quiser tracking de ações
 
-SELECT 'Tipos criados:' as status;
-SELECT typname FROM pg_type WHERE typname IN ('user_role', 'task_recurrence');
+-- Criar tabela de auditoria
+CREATE TABLE IF NOT EXISTS team_audit_log (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    action VARCHAR(100) NOT NULL, -- 'member_removed', 'member_added', 'role_changed', etc.
+    target_user_id UUID, -- ID do usuário que foi afetado pela ação
+    details JSONB, -- Detalhes extras da ação
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
-SELECT 'Função criada:' as status;
-SELECT routine_name FROM information_schema.routines WHERE routine_name = 'handle_new_user';
+-- Criar índices para performance
+CREATE INDEX IF NOT EXISTS idx_team_audit_log_team_id ON team_audit_log(team_id);
+CREATE INDEX IF NOT EXISTS idx_team_audit_log_created_at ON team_audit_log(created_at);
 
-SELECT 'Configuração completa! Pode começar a usar a aplicação.' as final_status;
+-- Função para registar remoção de membro (OPCIONAL)
+-- Pode ser usada no futuro para tracking avançado
+CREATE OR REPLACE FUNCTION log_member_removal()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Apenas logar se team_id mudou de valor para NULL
+    IF OLD.team_id IS NOT NULL AND NEW.team_id IS NULL THEN
+        INSERT INTO team_audit_log (
+            team_id,
+            user_id,
+            action,
+            target_user_id,
+            details
+        ) VALUES (
+            OLD.team_id,
+            auth.uid(), -- Usuário que fez a ação
+            'member_removed',
+            OLD.id,
+            jsonb_build_object(
+                'member_name', OLD.nome,
+                'member_email', OLD.email,
+                'member_role', OLD.role
+            )
+        );
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Comentar a linha abaixo se não quiser auditoria automática
+-- CREATE TRIGGER trigger_member_removal AFTER UPDATE ON users FOR EACH ROW EXECUTE FUNCTION log_member_removal();
+-- Script para adicionar sistema de pedidos para entrar na equipa
+-- Execute este script no SQL Editor do Supabase
+
+-- Criar tabela de pedidos para equipa
+CREATE TABLE IF NOT EXISTS team_requests (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  team_id UUID REFERENCES teams(id) ON DELETE CASCADE NOT NULL,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+  status VARCHAR(20) DEFAULT 'pendente' CHECK (status IN ('pendente', 'aceite', 'rejeitado')),
+  mensagem TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  reviewed_at TIMESTAMP WITH TIME ZONE,
+  reviewed_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  
+  -- Garantir que um user só pode ter um pedido pendente por equipa
+  UNIQUE(team_id, user_id)
+);
+
+-- Adicionar RLS (Row Level Security)
+ALTER TABLE team_requests ENABLE ROW LEVEL SECURITY;
+
+-- Política para utilizadores verem os seus próprios pedidos
+CREATE POLICY "Users can view their own requests" ON team_requests
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- Política para utilizadores criarem pedidos
+CREATE POLICY "Users can create team requests" ON team_requests
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- Política para chefes verem pedidos da sua equipa
+CREATE POLICY "Team leaders can view team requests" ON team_requests
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM teams 
+      WHERE teams.id = team_requests.team_id 
+      AND teams.chefe_user_id = auth.uid()
+    )
+  );
+
+-- Política para chefes atualizarem pedidos da sua equipa
+CREATE POLICY "Team leaders can update team requests" ON team_requests
+  FOR UPDATE USING (
+    EXISTS (
+      SELECT 1 FROM teams 
+      WHERE teams.id = team_requests.team_id 
+      AND teams.chefe_user_id = auth.uid()
+    )
+  );
+
+-- Criar função para atualizar updated_at automaticamente
+CREATE OR REPLACE FUNCTION update_team_requests_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Criar trigger para atualizar updated_at
+CREATE TRIGGER team_requests_updated_at_trigger
+  BEFORE UPDATE ON team_requests
+  FOR EACH ROW
+  EXECUTE FUNCTION update_team_requests_updated_at();
+
+-- Criar função para aceitar pedido de equipa
+CREATE OR REPLACE FUNCTION accept_team_request(request_id UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  request_record team_requests%ROWTYPE;
+  team_record teams%ROWTYPE;
+BEGIN
+  -- Obter o pedido
+  SELECT * INTO request_record FROM team_requests WHERE id = request_id;
+  
+  IF NOT FOUND THEN
+    RETURN FALSE;
+  END IF;
+  
+  -- Verificar se o utilizador atual é o chefe da equipa
+  SELECT * INTO team_record FROM teams WHERE id = request_record.team_id AND chefe_user_id = auth.uid();
+  
+  IF NOT FOUND THEN
+    RETURN FALSE;
+  END IF;
+  
+  -- Atualizar o pedido para aceite
+  UPDATE team_requests 
+  SET 
+    status = 'aceite',
+    reviewed_at = NOW(),
+    reviewed_by = auth.uid()
+  WHERE id = request_id;
+  
+  -- Adicionar o utilizador à equipa
+  UPDATE users 
+  SET team_id = request_record.team_id
+  WHERE id = request_record.user_id;
+  
+  RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Criar função para rejeitar pedido de equipa
+CREATE OR REPLACE FUNCTION reject_team_request(request_id UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  request_record team_requests%ROWTYPE;
+  team_record teams%ROWTYPE;
+BEGIN
+  -- Obter o pedido
+  SELECT * INTO request_record FROM team_requests WHERE id = request_id;
+  
+  IF NOT FOUND THEN
+    RETURN FALSE;
+  END IF;
+  
+  -- Verificar se o utilizador atual é o chefe da equipa
+  SELECT * INTO team_record FROM teams WHERE id = request_record.team_id AND chefe_user_id = auth.uid();
+  
+  IF NOT FOUND THEN
+    RETURN FALSE;
+  END IF;
+  
+  -- Atualizar o pedido para rejeitado
+  UPDATE team_requests 
+  SET 
+    status = 'rejeitado',
+    reviewed_at = NOW(),
+    reviewed_by = auth.uid()
+  WHERE id = request_id;
+  
+  RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
